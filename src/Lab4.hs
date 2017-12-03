@@ -24,7 +24,7 @@ fac n = n * fac (n-1)
 
 -- This type declaration does not mean anything, it helps me
 -- understand what data types are.
---Red :: Colour and Black :: Colour
+--Red :: Colour | Black :: Colour
 data Colour = Red | Black
 
 instance Show Colour where
@@ -35,8 +35,8 @@ instance Eq Colour where
     Red == Red     = True
     Black == Black = True
 
---Type declaration not needed. Node is the type constructor (?)
---Tree :: Leaf | Node -> Colour -> Tree
+--Type declaration not needed. Node is the type constructor.
+--Leaf :: Tree a | Node :: Colour -> Tree a -> a -> Tree a -> Tree a
 data Tree a = Leaf | Node Colour (Tree a) a (Tree a)
     deriving Show
 
