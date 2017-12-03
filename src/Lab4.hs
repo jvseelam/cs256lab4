@@ -88,24 +88,21 @@ balance Black a x (Node Red (Node Red b y c) z d) = -- x z y (right left)
     Node Red (Node Black a x b) y (Node Black c z d)
 balance c l x r = Node c l x r
 
-insert :: Ord a => Tree a -> a -> Tree a
-insert Leaf a           = singleton a
-insert (Node c l x r) a
-    | a > x             = f (g (tree1 c l x r a))
+-- makeBlack is only called once. insert2 is the auxiliary function
+-- which does the actual insertion.
+insert  :: Ord a => Tree a -> a -> Tree a
+insert tree a = makeBlack (insert2 tree a)
+
+-- insert2 uses balance to balance the tree when necessary i.e. when
+-- the tree matches with any of the four cases defined in balance.
+insert2 :: Ord a => Tree a -> a -> Tree a
+insert2 Leaf a          = singleton a
+insert2 (Node c l x r) a
+    | a > x             = bal (Node c l x (insert2 r a))
     | a == x            = Node c l x r
-    | otherwise         = f (g (tree2 c l x r a))
-    where
-        tree1 c l x r a = Node c l x (insertnb r a) -- Insert into the right
-        tree2 c l x r a = Node c (insertnb l a) x r -- Insert into the left
-        insertnb Leaf aa -- A "non makeBlack" version of insert
-                        = insert Leaf aa
-        insertnb (Node cc le xx ri) aa
-            | aa > xx   = (tree1 cc le xx ri aa)
-            | aa == xx  = Node cc le xx ri
-            | otherwise = (tree2 cc le xx ri aa)
-        g (Node c l x r)
-                        = balance c l x r
-        f y             = makeBlack y
+    | otherwise         = bal (Node c (insert2 l a) x r)
+    where bal (Node c l x r) = balance c l x r
+
 
 
 
