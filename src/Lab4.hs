@@ -24,7 +24,7 @@ fac n = n * fac (n-1)
 
 -- This type declaration does not mean anything, it helps me
 -- understand what data types are.
---Colour :: Colour
+--Red :: Colour and Black :: Colour
 data Colour = Red | Black
 
 instance Show Colour where
