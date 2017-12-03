@@ -61,7 +61,7 @@ depth (Node c l a r) = 1 + max (depth l) (depth r)
 toList :: Tree a -> [a]
 toList Leaf           = []
 toList (Node c l a r) =
-    (toList l) ++ ([a]) ++ (toList r)
+    toList l ++ [a] ++ toList r
     -- inorder, so recursively traverse the left tree, visit the middle node,
     -- recursively traverse the right node tree.
 
