@@ -53,7 +53,7 @@ singleton a = Node Red Leaf a Leaf
 
 makeBlack :: Tree a -> Tree a
 makeBlack (Node _ l x r) = (Node Black l x r)
-makeBlack tree           = tree
+makeBlack tree           = tree --why is this line necessary?
 
 depth :: Tree a -> Int
 depth Leaf           = 0
