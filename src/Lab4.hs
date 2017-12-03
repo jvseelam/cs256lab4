@@ -43,36 +43,30 @@ instance Eq Colour where
 -- Type declaration not needed. Leaf and Node are type constructors.
 -- Leaf :: Tree a | Node :: Colour -> Tree a -> a -> Tree a -> Tree a
 data Tree a = Leaf | Node Colour (Tree a) a (Tree a)
-    deriving (Show, Eq)
-
--- Update this later.
--- instance Eq (Tree a) where
---     Leaf == Leaf                             = True
-    -- (Node c1 l1 a1 r1) == (Node c2 l2 a2 r2) =
-    --     ((c1 == c2) && (l1 == l2) && (a1 == a2)  && (r1 == r2))
+    deriving Show
 
 empty :: Tree a
 empty = Leaf
 
 singleton :: a -> Tree a
-singleton a = Node Red empty a empty
+singleton a = Node Red Leaf a Leaf
 
 makeBlack :: Tree a -> Tree a
-makeBlack (Node c l x r) = (Node Black l x r)
+makeBlack (Node _ l x r) = (Node Black l x r)
+makeBlack tree           = tree
 
 depth :: Tree a -> Int
 depth Leaf           = 0
-depth (Node c l a r) = 1 + max (depth l) (depth r)
+depth (Node _ l _ r) = 1 + max (depth l) (depth r)
 
 toList :: Tree a -> [a]
 toList Leaf           = []
-toList (Node c l a r) =
-    toList l ++ [a] ++ toList r
+toList (Node _ l a r) = toList l ++ [a] ++ toList r
     -- inorder, so recursively traverse the left tree, visit the middle node,
     -- recursively traverse the right node tree.
 
 member :: Ord a => a -> Tree a -> Bool
-member x (Node c l a r)
+member x (Node _ l a r)
     | x == a          = True
     | x > a           = member x r
     |otherwise        = member x l
@@ -98,10 +92,10 @@ insert tree a = makeBlack (insert2 tree a)
 insert2 :: Ord a => Tree a -> a -> Tree a
 insert2 Leaf a          = singleton a
 insert2 (Node c l x r) a
-    | a > x             = bal (Node c l x (insert2 r a))
+    | a > x             = balance c l x (insert2 r a)
     | a == x            = Node c l x r
-    | otherwise         = bal (Node c (insert2 l a) x r)
-    where bal (Node c l x r) = balance c l x r
+    | otherwise         = balance c (insert2 l a) x r
+
 
 
 
