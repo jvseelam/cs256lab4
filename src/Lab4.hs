@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------
 
 module Lab4 where
-import Data.List((++), elemIndex)
+import Data.List(elemIndex)
 
 --------------------------------------------------------------------------------
 
@@ -22,26 +22,32 @@ fac n = n * fac (n-1)
 
 -- Red-black trees
 
--- This type declaration does not mean anything, it helps me
--- understand what data types are.
+-- These type declarations are unnecesary but help me
+-- understand what data types and the are.
 --Red :: Colour | Black :: Colour
 data Colour = Red | Black
 
+-- These are pattern matching implementations of show/Eq instances for Colour.
+-- It can also be done using a deriving statement as done with Tree a.
 instance Show Colour where
     show Red   = "Red"
     show Black = "Black"
 
+-- See above comment.
 instance Eq Colour where
-    Red == Red     = True
+    Red   == Red   = True
     Black == Black = True
+    Red   == Black = False
+    Black == Red   = False
 
---Type declaration not needed. Node is the type constructor.
---Leaf :: Tree a | Node :: Colour -> Tree a -> a -> Tree a -> Tree a
+-- Type declaration not needed. Leaf and Node are type constructors.
+-- Leaf :: Tree a | Node :: Colour -> Tree a -> a -> Tree a -> Tree a
 data Tree a = Leaf | Node Colour (Tree a) a (Tree a)
-    deriving Show
+    deriving (Show, Eq)
 
-instance Eq (Tree a) where
-    Leaf == Leaf                             = True
+-- Update this later.
+-- instance Eq (Tree a) where
+--     Leaf == Leaf                             = True
     -- (Node c1 l1 a1 r1) == (Node c2 l2 a2 r2) =
     --     ((c1 == c2) && (l1 == l2) && (a1 == a2)  && (r1 == r2))
 
@@ -66,7 +72,10 @@ toList (Node c l a r) =
     -- recursively traverse the right node tree.
 
 member :: Ord a => a -> Tree a -> Bool
-member a tree = not ( (elemIndex a (toList tree)) == Nothing )
+member x (Node c l a r)
+    | x == a          = True
+    | x > a           = member x r
+    |otherwise        = member x l
 
 balance :: Colour -> Tree a -> a -> Tree a -> Tree a
 balance Black (Node Red (Node Red a x b) y c) z d = -- z y x (left left)
