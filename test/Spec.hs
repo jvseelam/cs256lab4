@@ -14,7 +14,6 @@ import Data.List (nub, sort)
 import qualified Lab4 as L
 
 --------------------------------------------------------------------------------
-
 -- | The main entry point to the test suite.
 main :: IO ()
 main = hspec $ do
